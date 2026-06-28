@@ -1,268 +1,236 @@
-Executive summary
-The company must determine whether the new onboarding and activation campaign should replace the existing onboarding experience. The goal is to increase Paid Conversion Rate and user engagement while minimizing risks such as refunds and support issues. A recommendation should be based on experiment results, statistical evidence, and guardrail metric performance.
-Task 1: Understand the Business Problem (Summary)
-Question 1: What decision needs to be made?
-Determine whether the new onboarding campaign (Treatment) should be rolled out to all users.
-Question 2: Who does the decision impact?
-The decision impacts users, the Product Team, Marketing Team, Customer Support Team, and company leadership.
-Question 3: What metric should improve?
-The primary metric is Paid Conversion Rate. Supporting metrics include Trial Start Rate, Onboarding Completion Rate, Revenue per User, and Engagement Score.
-Question 4: What risks must be monitored?
-Key risks include increased Refund Rate, Support Ticket Rate, user drop-off, lower engagement, and slower conversions.
-Question 5: What evidence is required before making a recommendation?
-Evidence should show that the Treatment group improves Paid Conversion Rate, delivers better revenue and engagement outcomes, maintains acceptable guardrail metrics, and achieves statistically significant results.
-Task 2: North Star Metric
+# Sales Data Cleaning and Business Analysis Project
 
-North Star Metric: Paid Conversion Rate
- (percentage of new users who become paying subscribers within 30 days of signup)
-1. Why This Metric Is the Main Success Metric
-For a subscription-based digital product company, the Paid Conversion Rate represents the ultimate validation of early user value. While clicking pages or finishing profiles shows interest, a user's decision to cross the paywall and spend money confirms they have experienced their "Aha!" moment and found real value. This metric directly aligns the product team's onboarding performance with the business's core growth objectives.
-2. Why Other Metrics Are Supporting Metrics Instead of the North Star
-•	Landing Page Visit, Trial Start, and Onboarding Completion Rates: These are leading operational funnel indicators (micro-conversions). They are essential for diagnosing drop-offs, but they do not guarantee commercial success. For example, a campaign can achieve a +35.0% increase in onboarding completion, but if those users never subscribe, the company gains no economic value.
-•	Engagement Score and Days to Convert: These are behavioral indicators. A faster time-to-convert (reduced by 2.5 days) and a higher engagement score (+10.3%) show positive momentum, but high engagement inside a free tier does not sustain a business without eventual monetization.
-•	Average Revenue per User / Converter: These are lagging financial outcomes. Raw revenue metrics are highly vulnerable to extreme outliers or changes in plan mix. Paid Conversion Rate provides a cleaner, unskewed baseline of how effectively the onboarding experience converts the average sign-up.
-3. How This Metric Connects to Business Growth
-Paid Conversion Rate is a primary driver of predictable revenue scaling:
-•	CAC Efficiency: Increasing this rate means the company acquires more paying subscribers from the exact same top-of-funnel marketing spend, lowering Customer Acquisition Costs (CAC) and shortening the CAC payback period.
-•	Compounding Revenue Base: It directly accelerates Monthly Recurring Revenue (MRR) and Annual Recurring Revenue (ARR) growth, providing predictable cash flows that can be reinvested into product expansion.
-4. What Could Go Wrong If This Metric Is Optimized Blindly
-Optimizing for Paid Conversion Rate in isolation can create severe, unintended downstream issues:
-•	The 'Cheap Conversion' Trap (Revenue Dilution): Onboarding flows can artificially pump up conversion rates by hiding premium tiers and aggressively forcing users into cheap, low-margin, or highly discounted basic plans. This is a visible threat in our data: while conversion rates more than doubled (3.2% -> 7.0%), the Average Revenue per Converter dropped by -52.8% (from $1,630 down to $770). The company risks replacing high-value users with low-value, unsustainable accounts.
-•	Operational Overhead and Customer Friction: High-pressure conversion prompts or confusing onboarding steps can trick or force users into buying before they are ready. This creates massive user friction, which is reflected in our data as a +69.4% surge in support tickets and an emerging risk of refund requests.
-•	The Leaky Bucket Problem (Severe Churn): Users who are pushed to convert prematurely without establishing true product-market fit will cancel their subscriptions at the very first renewal cycle. This collapses long-term retention and customer Lifetime Value (LTV), completely wiping out short-term conversion wins.
-Task 3: Create KPI Tree
-Business Explanation
-North Star Metric
-•	Paid Conversion Rate: Measures the percentage of users who become paying customers. This directly aligns with the business objective of increasing subscriptions.
-Primary Driver 1: Acquisition & Activation
-•	Landing Page Visit Rate
-•	Trial Start Rate
-These indicate whether users are entering and engaging with the onboarding funnel.
-Primary Driver 2: Onboarding Success
-•	Onboarding Completion Rate
-•	Average Days to Convert
-These measure how effectively users move through onboarding and how quickly they become customers.
-Primary Driver 3: User Engagement
-•	Average Engagement Score
-•	Active User Participation
-Higher engagement generally leads to stronger retention and conversion.
-Primary Driver 4: Revenue Performance
-•	Average Revenue per User (ARPU)
-•	Average Revenue per Converted User (ARPPU)
-These measure the financial impact of the onboarding experience.
-Guardrail Metrics
-•	Refund Rate
-•	Support Ticket Rate
-•	User Drop-off Rate During Onboarding
-These ensure the treatment does not improve conversion at the cost of customer experience or operational burden.
+## 1. Problem Summary
 
+The company has exported order-level sales data from multiple internal systems. The raw dataset contains issues such as inconsistent text formatting, date format problems, duplicate records, missing values, invalid discounts, calculation mismatches, and order status inconsistencies.
 
-Task 4: Clean and Prepare Experiment Data
-Question 1: Did the dataset contain any missing values?
-Check Performed
-The dataset was examined for missing values across all columns.
-Result
-Missing values were identified in the following fields:
-•	Device Type
-•	Traffic Source
-•	Engagement Score
-•	Days to Convert
-Action Taken
-Column	Action Taken
-Device Type	Missing values replaced with "Unknown"
-Traffic Source	Missing values replaced with "Unknown"
-Engagement Score	Missing values imputed using the median engagement score within each experiment group
-Days to Convert	Left unchanged because non-converted users naturally have no conversion date
-Business Rationale
-Handling missing values ensures accurate KPI calculations and prevents bias in segmentation analysis.
-________________________________________
-Question 2: Were group counts checked?
-Check Performed
-The number of users in each experiment group was verified.
-Result
-Group	User Count
-Control	690
-Treatment	710
-Action Taken
-No action required because both groups contained a sufficient number of users for comparison.
-Business Rationale
-Verifying group counts confirms that both groups are adequately represented and that the experiment results are reliable.
-________________________________________
-Question 3: Were duplicate user IDs checked?
-Check Performed
-User IDs were reviewed to identify duplicate records.
-Result
-Metric	Value
-Duplicate Records Found	8
-Duplicate Records Marked as Duplicate.	8
-Action Taken
-Duplicate records were removed before analysis.
-Business Rationale
-A user should only appear once in the experiment. Duplicate records can distort conversion rates, revenue calculations, and engagement metrics.
-________________________________________
-Question 4: Were invalid binary values checked?
-Check Performed
-The following binary fields were validated:
-•	Landing Page Visited
-•	Trial Started
-•	Onboarding Completed
-•	Converted to Paid
-•	Refund Requested
-•	Support Ticket Raised
-Valid values:
-•	0 = No
-•	1 = Yes
-Result
-No invalid binary values were identified.
-Action Taken
-No corrections were required.
-Business Rationale
-Binary metrics form the basis of conversion funnel calculations. Invalid values would result in inaccurate KPI reporting.
-________________________________________
-Question 5: Were outliers in revenue checked?
-Check Performed
-Revenue values were reviewed using descriptive statistics and outlier detection methods.
-Result
-A small number of unusually high revenue values were identified.
-Action Taken
-The records were retained because they represented legitimate customer purchases rather than data entry errors.
-Business Rationale
-Removing genuine high-value customers would underestimate the financial impact of the onboarding experience.
-________________________________________
-Question 6: Was segment distribution across groups checked?
-Check Performed
-The distribution of users across major segments was reviewed for both Control and Treatment groups.
-Segments reviewed:
-•	Region
-•	Device Type
-•	Traffic Source
-•	Plan Type
-Result
-The distributions were compared to ensure that one group was not heavily overrepresented within any segment.
-Business Rationale
-Balanced segment distributions help ensure that observed differences are caused by the Treatment experience rather than differences in user demographics or acquisition channels.
-________________________________________
-Question 7: What data preparation steps were completed before analysis?
-Data Preparation Steps
-1.	Removed duplicate records.
-2.	Checked and handled missing values.
-3.	Validated all binary variables.
-4.	Reviewed revenue outliers.
-5.	Verified Control and Treatment group sizes.
-6.	Reviewed segment distributions.
-7.	Prepared a clean dataset for KPI calculation and experiment analysis.
-Task 3: Experiment Result Summary
+Task is to clean the dataset, validate the business rules, document all issues found, and create summary reports using Excel.
 
-Task 5: Experiment Result Summary
-•	Primary Conversion Growth: The Treatment framework successfully expanded the paid conversion rate from 3.19% to 7.04%, representing a massive improvement in user acquisition.
-•	Accelerated Time-to-Convert: The onboarding journey was highly optimized for speed, cutting the average time it takes a user to upgrade from 8.86 days down to 6.53 days.
-•	Support Ticket Surge: A critical operational bottleneck emerged as unique customer support tickets spiked from 14.78% to 24.79%, meaning nearly 1 in 4 users required human intervention due to technical confusion or friction.
-•	Degraded Revenue Quality: Revenue retention failed a vital guardrail check, with the refund rate rising from a perfect 0.00% up to a damaging 6.00%, signaling severe buyer's remorse.
-•	Final Deployment Status: HOLD. Despite the initial conversion velocity breakthrough, a full production rollout is blocked. The onboarding pipeline must be refactored to eliminate user confusion and transaction reversals before traffic is increased.
+---
 
+## 2. Dataset Description
 
+| Column Name    | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| order_id       | Unique identifier for each order                            |
+| order_date     | Date when the order was placed                              |
+| ship_date      | Date when the order was shipped                             |
+| customer_id    | Unique identifier for each customer                         |
+| customer_name  | Name of the customer                                        |
+| segment        | Customer segment (Consumer, Corporate, Home Office, etc.)   |
+| region         | Geographic region of the customer/order                     |
+| state          | State where the customer is located                         |
+| city           | City where the customer is located                          |
+| category       | Main product category                                       |
+| sub_category   | Product sub-category                                        |
+| product_name   | Name of the product purchased                               |
+| ship_mode      | Shipping method used for delivery                           |
+| quantity       | Number of units purchased                                   |
+| unit_price     | Price per unit of the product                               |
+| discount       | Discount applied to the order                               |
+| sales          | Total sales amount generated                                |
+| cost           | Total cost associated with the product/order                |
+| profit         | Profit earned (Sales − Cost)                                |
+| payment_status | Status of payment (Paid, Pending, Failed, etc.)             |
+| order_status   | Current order status (Completed, Cancelled, Returned, etc.) |
 
+---
 
+## 3. Tools Used
 
+* Microsoft Excel
+* Pivot Tables
+* Excel Functions (IF, COUNTIF, SUM, AVERAGE, MONTH, YEAR, ROUND, etc.)
+* Conditional Formatting
+* Sorting and Filtering
 
+---
 
-Task 4: Frame Hypotheses
+## 4. Cleaning Actions Performed
 
-Task 6: 
-Hypothesis Set 1: Evaluating the Impact of Order Cancellations on Profit Margins
-Requirement Component	Details & Operational Application
-Metric Being Tested	Average Profit Margin (profit_margin)
-Reason for Choosing Metric	Data profiling isolated a heavy volume of leakage (146 Cancelled, 69 Failed, and 72 Refunded records). Measuring the margin baseline across these groups proves whether process friction is actively draining corporate returns.
-Null Hypothesis (H0)	There is no statistical difference between the average profit margin of completed orders and orders that experienced transaction disruptions.
+### Missing Value Imputation
 
- [Average Profit Margin of Clean Orders] = [Average Profit Margin of Disrupted Orders]
-Alternate Hypothesis (Ha)	The average profit margin of completed orders is significantly higher than that of structurally disrupted transactions.
+* Filled all blank region and ship_mode fields with the fallback string "Unknown".
+* Replaced missing discount entries with 0 to keep financial columns clean.
 
-[Average Profit Margin of Clean Orders] > [Average Profit Margin of Disrupted Orders]
-Test Tail Type	One-tailed test (Directional right-tailed check tracking relative profit erosion).
-Significance Level	Alpha = 0.05 (95% statistical confidence threshold standard for business operations).
-Connection to Business Decision	Infrastructure Capital Approval: If the null hypothesis is rejected, it proves transaction failures severely depress company margins. This gives you the empirical justification needed to back an executive decision to upgrade the e-commerce payment gateway.
-Interpretation Logic
-•	If p-value < 0.05: Reject the Null Hypothesis. Conclude that transaction leakage significantly degrades profitability, validating immediate infrastructure investment.
-•	If p-value >= 0.05: Fail to Reject the Null Hypothesis. Conclude margin variance is due to random noise, meaning capital should be deployed elsewhere.
-Hypothesis Set 2: The Operational Cost of Shipping Delays
-Requirement Component	Details & Operational Application
-Metric Being Tested	Average Shipping Delay in Days (shipping_delay_days)
-Reason for Choosing Metric	The data cleanup log flagged a severe sequence anomaly (94 records with backward timelines where the ship date preceded the order date). Analyzing standard delays across different fulfillment channels isolates supply chain logjams.
-Null Hypothesis (H0)	The true mean shipping delay across all shipping carrier modes is identical.
+### Data Standardization
 
-Plain Text: [Mean Delay of Standard Class] = [Mean Delay of Second Class] = [Mean Delay of First Class]
-Alternate Hypothesis (Ha)	At least one shipping carrier mode exhibits a mean shipping delay that is structurally different from the others.
-Test Tail Type	Two-tailed test (Evaluated via an ANOVA F-test structure to catch variation anywhere across multiple group means).
-Significance Level	Alpha = 0.05
-Connection to Business Decision	Logistics Vendor Management: If the test indicates significant variance, it flags exactly which carrier tiers are breaching corporate delivery Service Level Agreements (SLAs). Management can use this to terminate underperforming vendor contracts or renegotiate rate matrices.
-Interpretation Logic
-•	If p-value < 0.05: Reject the Null Hypothesis. Conclude delivery performance varies significantly by mode, revealing a clear opportunity to trim logistics overhead.
-•	If p-value >= 0.05: Fail to Reject the Null Hypothesis. Conclude distribution timing is statistically uniform across the fulfillment network.
+* Stripped whitespace from string IDs and parsed all varied text fields in order_date and ship_date into clean datetime object formats.
 
-Task 5: Evaluate Guardrail Metrics
+### Discount Cleanup
 
-Guardrail metric	Control Group	Treatment Group	Risk Evaluation & Operational Status	Formula
-Refund rate	0	6%	High Risk: Jumps from zero to 6%. Indicates that while more users are upgrading, a significant portion regret the purchase immediately.	=No. of refund requests/
-Total Paid Conversions
-Support Ticket Rate	14.78%	24.79%	High Risk: A massive +10.01% absolute spike. This indicates severe user confusion or technical friction in the new flow	=Count of unique who filed the ticket / Total users in the segment
-Days to Convert	8.86	6.53	Positive Lift: Users are making the decision to upgrade 2.33 days faster than the baseline.	=Sum of all Converted Users/
-Total Number of Converted Users
+* Built a programmatic cleaning loop to catch text symbols (like %), standardize whole numbers into decimals (turning 15 into 0.15), and force negative parameters to zero.
 
-2. Guardrail Risk Analysis
-Two out of the three guardrail metrics create severe, high-level business risks that stall an immediate 100% production rollout:
-•	The Customer Friction Risk (Support Tickets): Nearly 1 in 4 users (24.79%) in the Treatment group required human support intervention, compared to just 14.78% in the Control. This 10% surge will overwhelm customer success teams and points to a major clarity flaw or bug in the new onboarding journey.
-•	The Revenue Quality Risk (Refunds): The Control group experienced a perfect 0% refund rate, but the Treatment group shot up to 6.00%. This proves that the accelerated conversion speed (6.53 days) is actually backfiring—users are likely feeling rushed or misled into upgrading, leading to immediate buyer's remorse and transaction reversals.
-Task 6: Segment-Level Insight
-Paid Conversion Rate improved across all geographic regions and most device and traffic source segments.
+### Feature Engineering
 
-Key observations:
+Calculated 7 new columns to enhance data utility:
 
-North Region showed the largest regional improvement.
-Mobile users demonstrated the strongest device-level improvement.
-Referral traffic produced the highest increase in conversion rate.
-Social traffic was the only major segment where Treatment performed slightly worse than Control.
-Overall, the positive treatment effect was broadly consistent across customer segments.
-Device Type Analysis (Paid Conversion Rate)
+* cleaned_discount
+* calculated_sales
+* calculated_profit
+* profit_margin
+* shipping_delay_days
+* order_month (formatted with numeric prefixes like "1 - January")
+* order_year
 
-Row Labels	Control	Treatment
-Desktop	4.5%	6.6%
-Mobile	2.6%	7.4%
-Tablet	1.8%	7.1%
+---
 
-Region Analysis (Paid Conversion Rate)
+## 5. Business Rules Applied
 
-Row Labels	Control	Treatment
-East	2.5%	6.5%
-North	3.5%	8.9%
-South	3.3%	7.7%
-West	3.4%	5.1%
+### Data Preservation (Rule 1)
 
-Traffic Source Analysis (Paid Conversion Rate)
+The raw input file raw_orders.xlsx was completely left alone and preserved; all modifications were compiled into a separate workbench sheet.
 
-Email	2.7%	7.1%
-Organic	2.0%	6.3%
-Paid Search	1.3%	6.3%
-Referral	2.5%	11.0%
-Social	7.8%	6.1%
+### Discount Boundary Rule
 
-Final recommendation:
+Discounts were strictly bounded between a valid 0.0 (0%) and 1.0 (100%) range to safeguard downstream calculations.
 
-Executive Summary While the new onboarding treatment successfully accelerated the user journey—reducing the average days to convert from 8.86 to 6.53 days and driving a massive lift in paid conversions—it introduces critical structural risks that threaten overall business health. The accelerated funnel has triggered severe downstream operational and financial damage, causing unique user support tickets to spike by an absolute +10.01% (reaching nearly 1 in 4 users) and inflating the refund rate from a stable 0% to a dangerous 6.00%. Because these guardrail metrics reveal severe user confusion and immediate buyer's remorse, a full production rollout is firmly held; the onboarding strategy must be redesigned to address clarity gaps and technical friction before any further deployment can be safely approved. 
+### Calculated Metrics Formulas
 
-Assumptions and Limitations
-1. Assumptions
-•	Random Assignment: Users were cleanly randomized into Control and Treatment groups to ensure no baseline bias.
-•	Data Accuracy: All tracking logs (conversions, tickets, refunds, dates) were recorded uniformly and without errors.
-•	Independence: One user’s behavior or signup flow had no impact or influence on another user's choices.
-•	Sufficient Duration: The test ran long enough to completely observe the full user journey from signup to paid conversion.
-•	External Stability: No outside disruptions (market shifts, major outages, or separate marketing blitzes) skewed one group over the other.
-•	Balanced Segmentation: Background variables like geography, device types, and traffic channels were distributed evenly between both test pools.
-2. Limitations
-•	Short-Term Scope: The analysis only covers early behaviors. Long-term metrics like churn, retention, and exact customer lifetime value (LTV) remain unmeasured.
-•	Revenue Depth: Financial evaluation focuses strictly on upfront conversions rather than long-term customer profitability.
-•	Unobserved Data Friction: Despite standard validation checks, hidden backend anomalies or tracking gaps might still persist.
-•	Missing Qualitative Context: The 10% spike in support tickets proves user confusion exists, but raw numbers cannot explain why users got stuck without separate qualitative surveys.
-•	Cohort Variance: Aggregate averages hide micro-trends; specific sub-segments (like Mobile users) react very differently than the general population.
-•	Time Decay: The findings represent a snapshot in time; shifting market conditions or future product iterations may cause these exact behavioral patterns to change.
+```excel
+=(Quantity * Unit_Price) * (1 - Cleaned_Discount)
+```
 
+```excel
+Calculated_profit = calculated_sales - cost
+```
+
+```excel
+Profit_margin = calculated_profit / calculated_sales
+```
+
+### Filter Rule for Summary Reports
+
+Excluded non-completed transaction states (Cancelled, Failed, Refunded) from summaries to prevent false performance metrics.
+
+---
+
+## 6. Summary of Data Quality Issues Found
+
+During the initial profiling of the dataset, several data quality issues were found across the columns:
+
+### Missing Values
+
+Blank fields discovered in critical categorical and numerical dimensions—specifically across:
+
+* region (26 missing)
+* ship_mode (22 missing)
+* discount (18 missing)
+
+### Duplicate Entries
+
+* Identical row repetitions causing data volume inflation.
+* Conflicting duplicate IDs where a single order_id held completely different operational details.
+
+### Format & Value Inconsistencies
+
+* Messy, unstandardized string percentages in the discount column.
+* Negative discount values (-16 entries).
+
+### Logical & Sequential Breaches
+
+Transactions where the ship_date was logged chronologically earlier than the order_date.
+
+### Downstream Calculation Mismatches
+
+System-generated math errors where recorded sales and profit metrics diverged from their foundational formula equations.
+
+### Order Status Vulnerabilities
+
+Blended tracking records containing non-completed transaction states (Cancelled, Failed, and Refunded rows).
+
+---
+
+## 7. Summary of Final Pivot Reports
+
+a. Sales by Region
+
+b. Sales and Profit by Category and Sub-Category
+
+c. Order Count by Ship-Mode
+
+d. Profit Margin by Consumer Segment
+
+e. Refunded/Cancelled/Failed Orders by Region
+
+f. Monthly Sales Trend
+
+---
+
+## 8. Key Business Insights
+
+### a. Regional Performance
+
+* South Region generated the highest sales (~2.15M), followed closely by East and West.
+* North Region recorded the lowest profit performance, contributing the largest overall losses despite comparable sales.
+
+### b. Category & Sub-Category Analysis
+
+* Furniture is the highest-selling category (~2.98M sales), followed by Technology and Office Supplies.
+* Technology generated the highest losses, suggesting pricing, discounting, or cost issues.
+* Among sub-categories, Chairs, Copiers, Phones, and Storage contribute significant sales volumes and should be prioritized for profitability analysis.
+
+### c. Profitability Concerns
+
+* All categories and customer segments show negative profit values, indicating a potential issue in pricing strategy, discount management, cost calculations, or profit formula logic.
+* Further validation of the profit calculation is recommended before making strategic decisions.
+
+### d. Shipping Preferences
+
+* Standard Class is the most frequently used shipping mode (246 orders).
+* Orders are relatively evenly distributed across First Class, Second Class, and Same Day shipping, suggesting diverse customer delivery preferences.
+* Only a small percentage of orders have an unknown shipping method.
+
+### e. Customer Segment Performance
+
+* Consumer segment contributes the largest share of negative profit margin.
+* Corporate, Home Office, and Small Business segments perform similarly, indicating no major profitability advantage from a particular segment.
+
+### f. Order Status Trends
+
+* Out of 932 total orders, 622 (67%) were completed successfully.
+* 146 orders (16%) were cancelled and 164 orders (18%) were returned.
+* The North Region has the highest number of cancelled orders, which may indicate fulfillment or customer satisfaction issues.
+
+### g. Monthly Sales Trend (2025)
+
+* Sales peaked in August (505K) and remained strong in September (432K).
+* A decline is observed in the final quarter, with sales dropping sharply in November and December.
+* The business appears to experience stronger performance during the middle of the year.
+
+---
+
+## 9. Assumptions & Limitations
+
+### Assumptions Made
+
+#### Cost Column Definitions
+
+In the raw dataset, the cost field represents Total Cost for that line item rather than unit cost, based on the perfect matching of Sales - Cost = Profit across all mathematically valid rows.
+
+#### Zero Discount Default
+
+Missing discounts were assumed to be a placeholder for 0% rather than an uncompleted transaction, provided the other sales metrics held up as valid.
+
+#### First Instance Validation
+
+For exact carbon-copy rows, the first appearance was assumed to be the valid entry, while subsequent matches were assumed to be copy-paste system glitches.
+
+### Limitations of Your Cleaning Process
+
+#### Lack of Primary Source Verification
+
+Because this cleaning process is handled programmatically post-export, there is no direct connection to the underlying inventory management database or retail CRM. This means we cannot automatically verify whether a mismatch in a customer's name or sales value is the absolute truth without a manual invoice lookup.
+
+#### Blind Overwrite of Total Cost
+
+Since the system assumes the cost column tracks total cost uniformly, any individual rows that might have actually flipped to "unit cost" during manual data entry could show up as false-positive profit calculation errors.
+
+---
+
+## 10. Screenshot Included
+
+* raw_data_preview.png
+* cleaned_data_preview.png
+* pivot_summary_1.png
+* pivot_summary_2.png
